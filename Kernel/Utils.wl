@@ -21,6 +21,9 @@ https://arxiv.org/pdf/1606.04797.pdf
 ";
 
 
+swishLayer::usage = "swishLayer[]  \:0444\:0443\:043d\:043a\:0446\:0438\:044f \:0430\:043a\:0442\:0438\:0432\:0430\:0446\:0438\:0438 \:043e\:0442 Google";
+
+
 (* ::Subsection:: *)
 (*\:041f\:0440\:043e\:0447\:0435\:0435*)
 
@@ -50,6 +53,8 @@ softDiceLossLayer[] = FunctionLayer[<|
 	"Input" -> "Varying", "Target"->"Varying"
 ];
 
+
+swishLayer[] := ElementwiseLayer[# LogisticSigmoid[#]&];
 
 
 (* ::Subsection:: *)
