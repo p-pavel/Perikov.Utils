@@ -45,8 +45,8 @@ Quiet @ Remove[Evaluate [Context[] <> "*"]];
 
 
 softDiceLossLayer[] = FunctionLayer[<|
-"Loss" ->1 -2 Total[#Input #Target ]/Total[#Input+#Target] +Mean [ Abs[#Input-#Target]Clip[1-#Target,{.01,1}]]
-|>&,
+	"Loss" ->1 -2 Total[#Input #Target ]/Total[#Input+#Target] +Mean [ Abs[#Input-#Target]Clip[1-#Target,{.01,1}]]
+	|>&,
 	"Input" -> "Varying", "Target"->"Varying"
 ];
 
