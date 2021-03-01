@@ -2,7 +2,7 @@
 
 BeginPackage["Perikov`Utils`"];
 
-Unprotect[Evaluate [Context[] <> "*"]]; 
+Unprotect[Evaluate [Context[] <> "*"]]; (* \:0432\:043d\:0438\:0437\:0443 \:044d\:0442\:043e \:0432 \:0432\:0438\:0434\:0435 \:0444\:0443\:043d\:043a\:0446\:0438\:0438 *)
 Quiet @ Remove[Evaluate [Context[] <> "*"]];
 
 
@@ -10,7 +10,7 @@ Quiet @ Remove[Evaluate [Context[] <> "*"]];
 (*\:0418\:043d\:0442\:0435\:0440\:0444\:0435\:0439\:0441*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*\:041d\:0435\:0439\:0440\:043e\:0441\:0435\:0442\:0438*)
 
 
@@ -32,6 +32,9 @@ randomArrayFragment::usage = "randomArrayFragment[arr, len] \:0434\:043e\:0441\:
 \:043f\:043e\:0441\:043b\:0435\:0434\:043e\:0432\:0430\:0442\:0435\:043b\:044c\:043d\:044b\:0439 \:043a\:0443\:0441\:043e\:043a \:0434\:043b\:0438\:043d\:043e\:0439 len \:0438\:0437 arr";
 addUtilityDock::usage = "addUtilityDock[] docks a cell with clock and other useful information";
 clearDock::usage ="clearDock[] undocks all docked cells in EvaluationNotebook";
+clearContext::usage = "clearContext[\"ctx`\"] Unprotects and removes all symbols in ctx
+clearContext[] does the same with the current context";
+protectContext::usage = "protectContext[\"ctx`\"] protects all symbols in ctx";
 
 
 
@@ -43,7 +46,7 @@ Begin["`Private`"];
 Quiet @ Remove[Evaluate [Context[] <> "*"]];
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*\:041d\:0435\:0439\:0440\:043e\:0441\:0435\:0442\:0438*)
 
 
@@ -55,6 +58,27 @@ softDiceLossLayer[] = FunctionLayer[<|
 
 
 swishLayer[] := ElementwiseLayer[# LogisticSigmoid[#]&];
+
+
+(* ::Subsection:: *)
+(*\:041c\:0430\:043d\:0438\:043f\:0443\:043b\:044f\:0446\:0438\:0438 \:0441 \:043a\:043e\:043d\:0442\:0435\:043a\:0441\:0442\:0430\:043c\:0438*)
+
+
+Generic::expectingCtxArg = "Expecting context name argument in form of a string \"ctx`\"";
+
+
+
+clearContext[ctx_String] := With[{pat = ctx <> "*"},
+	Unprotect@pat; 
+	Quiet @ Remove@pat;
+];
+clearContext[] := clearContext[Context[]];
+clearContext[args__]/;Message[General::expectingCtxArg] = Null;
+
+
+protectContext[ctx_String] := Protect @ Evaluate[ctx <> "*"];
+protectContext[] := protectContext[Context[]];
+protectContext[___]/; Message[General::expectingCtxArg] = Null;
 
 
 (* ::Subsection:: *)
@@ -101,5 +125,5 @@ showSizeTable[] := DynamicModule[{tbl},
 
 End[(*Private*)];
 
-Protect[Evaluate [Context[] <> "*"]];
+protectContext[];
 EndPackage[];
