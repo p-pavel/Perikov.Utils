@@ -35,7 +35,13 @@ clearDock::usage ="clearDock[] undocks all docked cells in EvaluationNotebook";
 clearContext::usage = "clearContext[\"ctx`\"] Unprotects and removes all symbols in ctx
 clearContext[] does the same with the current context";
 protectContext::usage = "protectContext[\"ctx`\"] protects all symbols in ctx";
+padArrayToMultiplyOf::usage = "padArrayToMultiplyOf[arr,n] \:0434\:043e\:0431\:0430\:0432\:043b\:044f\:0435\:0442 \:0441\:043f\:0440\:0430\:0432\:0430 \:043d\:0443\:043b\:0435\:0439, \:0447\:0442\:043e\:0431\:044b \:0434\:043b\:0438\:043d\:0430 \:0431\:044b\:043b\:0430 \:043a\:0440\:0430\:0442\:043d\:0430 n
+padArrayToMultiplyOf[arr,n, pad] \:0434\:043e\:0431\:0430\:0432\:043b\:044f\:0435\:0442 \:0441\:043f\:0440\:0430\:0432\:0430 pad
 
+\:0418\:043c\:0435\:0435\:0442 \:043e\:043f\:0435\:0440\:0430\:0442\:043e\:0440\:043d\:0443\:044e \:0444\:043e\:0440\:043c\:0443
+"; 
+utilsRunTests::usage = "utilsRunTests[] \:0437\:0430\:043f\:0443\:0441\:043a\:0430\:0435\:0442 \:0442\:0435\:0441\:0442\:044b.
+\:041f\:043e\:0442\:043e\:043c \:043f\:0435\:0440\:0435\:0442\:0430\:0449\:0438\:0442\:044c \:0432 \:0444\:0430\:0439\:043b";
 
 
 (* ::Section:: *)
@@ -111,6 +117,10 @@ Dynamic[
 ]};
 
 
+padArrayToMultiplyOf[arr_?VectorQ, n_Integer, padding_:0] := ArrayPad[arr,{0,Ceiling[Length @ arr, n] - Length @ arr}, padding];
+padArrayToMultiplyOf[n_Integer,padding_:0] := padArrayToMultiplyOf[#,n,padding]&;
+
+
 (* ::Subsubsection:: *)
 (*\:041f\:043e\:043a\:0430 \:043d\:0435 \:0440\:0430\:0431\:043e\:0442\:0430\:0435\:0442. \:041f\:043e\:0442\:0443\:0433\:0438 \:043f\:043e\:043a\:0430\:0437\:0430\:0442\:044c, \:043a\:0443\:0434\:0430 \:043f\:0430\:043c\:044f\:0442\:044c \:0434\:0435\:0451\:0442\:0441\:044f*)
 
@@ -121,6 +131,31 @@ buildSizeTable[sym_Symbol]:=(sym =Grid[Prepend[{"Symbol","Bytes","Remove"}]@Reve
 showSizeTable[] := DynamicModule[{tbl},
 	Dynamic @ tbl, Initialization:>buildSizeTable[tbl]
 ];
+
+
+(* ::Subsubsection:: *)
+(*\:0422\:0435\:0441\:0442\:044b*)
+
+
+(* ::Text:: *)
+(*\:0414\:043e\:043b\:0436\:043d\:044b \:0443\:0435\:0445\:0430\:0442\:044c \:0432 \:043e\:0442\:0434\:0435\:043b\:044c\:043d\:044b\:0439 \:0444\:0430\:0439\:043b*)
+
+
+utilsRunTests[] := TestReport @ {
+	VerificationTest[padArrayToMultiplyOf[{1,2,3,4},3,0],{1,2,3,4,0,0}, TestID->"padArray"],
+	VerificationTest[padArrayToMultiplyOf[{1,2,3,4},3], {1,2,3,4,0,0}, TestID->"padArrayDefaultPad"],
+	VerificationTest[padArrayToMultiplyOf[3]@{1,2,3,4}, {1,2,3,4,0,0}, TestID->"padArrayOperatorForm"]
+	};
+
+
+(* ::Text:: *)
+(**)
+(**)
+(**)
+(**)
+(**)
+(**)
+(**)
 
 
 End[(*Private*)];
