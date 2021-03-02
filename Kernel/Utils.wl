@@ -43,6 +43,9 @@ padArrayToMultiplyOf[arr,n, pad] \:0434\:043e\:0431\:0430\:0432\:043b\:044f\:043
 utilsRunTests::usage = "utilsRunTests[] \:0437\:0430\:043f\:0443\:0441\:043a\:0430\:0435\:0442 \:0442\:0435\:0441\:0442\:044b.
 \:041f\:043e\:0442\:043e\:043c \:043f\:0435\:0440\:0435\:0442\:0430\:0449\:0438\:0442\:044c \:0432 \:0444\:0430\:0439\:043b";
 
+NonNegativeIntegerQ = Internal`NonNegativeIntegerQ;
+PositiveIntegerQ = Internal`PositiveIntegerQ;
+
 
 (* ::Section:: *)
 (*\:0420\:0435\:0430\:043b\:0438\:0437\:0430\:0446\:0438\:044f*)
@@ -149,12 +152,6 @@ utilsRunTests[] := TestReport @ {
 
 
 (* ::Text:: *)
-(**)
-(**)
-(**)
-(**)
-(**)
-(**)
 (**)
 
 
