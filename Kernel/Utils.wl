@@ -45,6 +45,8 @@ utilsRunTests::usage = "utilsRunTests[] \:0437\:0430\:043f\:0443\:0441\:043a\:04
 
 NonNegativeIntegerQ = Internal`NonNegativeIntegerQ;
 PositiveIntegerQ = Internal`PositiveIntegerQ;
+randomSplitInRate::usage = "randomSplitInRate[data, r] \:043f\:0435\:0440\:0435\:043c\:0435\:0448\:0438\:0432\:0430\:0435\:0442 data \:0438 \:0432\:043e\:0437\:0432\:0440\:0430\:0449\:0430\:0435\:0442 \:0434\:0432\:0430 \:043a\:0443\:0441\:043a\:0430 \:0432 \:043f\:0440\:043e\:043f\:043e\:0440\:0446\:0438\:0438 r";
+
 
 
 (* ::Section:: *)
@@ -124,6 +126,9 @@ padArrayToMultiplyOf[arr_?VectorQ, n_Integer, padding_:0] := ArrayPad[arr,{0,Cei
 padArrayToMultiplyOf[n_Integer,padding_:0] := padArrayToMultiplyOf[#,n,padding]&;
 
 
+randomSplitInRate[data_List, r_/;0 < r < 1] := TakeDrop[RandomSample[data],Round[r Length[data]]];
+
+
 (* ::Subsubsection:: *)
 (*\:041f\:043e\:043a\:0430 \:043d\:0435 \:0440\:0430\:0431\:043e\:0442\:0430\:0435\:0442. \:041f\:043e\:0442\:0443\:0433\:0438 \:043f\:043e\:043a\:0430\:0437\:0430\:0442\:044c, \:043a\:0443\:0434\:0430 \:043f\:0430\:043c\:044f\:0442\:044c \:0434\:0435\:0451\:0442\:0441\:044f*)
 
@@ -148,7 +153,8 @@ utilsRunTests[] := TestReport @ {
 	VerificationTest[padArrayToMultiplyOf[{1,2,3,4},3,0],{1,2,3,4,0,0}, TestID->"padArray"],
 	VerificationTest[padArrayToMultiplyOf[{1,2,3,4},3], {1,2,3,4,0,0}, TestID->"padArrayDefaultPad"],
 	VerificationTest[padArrayToMultiplyOf[3]@{1,2,3,4}, {1,2,3,4,0,0}, TestID->"padArrayOperatorForm"],
-	VerificationTest[Length @ randomArrayFragment[{1,2,3,4},2],2, TestID->"randomArrayFragment"]
+	VerificationTest[Length @ randomArrayFragment[{1,2,3,4},2],2, TestID->"randomArrayFragment"],
+	VerificationTest[Length /@ randomSplitInRate[Range[12],.75], {9,3}, TestID->"randomSplitInRate"]
 	};
 
 
