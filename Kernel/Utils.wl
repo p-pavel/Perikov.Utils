@@ -147,7 +147,8 @@ showSizeTable[] := DynamicModule[{tbl},
 utilsRunTests[] := TestReport @ {
 	VerificationTest[padArrayToMultiplyOf[{1,2,3,4},3,0],{1,2,3,4,0,0}, TestID->"padArray"],
 	VerificationTest[padArrayToMultiplyOf[{1,2,3,4},3], {1,2,3,4,0,0}, TestID->"padArrayDefaultPad"],
-	VerificationTest[padArrayToMultiplyOf[3]@{1,2,3,4}, {1,2,3,4,0,0}, TestID->"padArrayOperatorForm"]
+	VerificationTest[padArrayToMultiplyOf[3]@{1,2,3,4}, {1,2,3,4,0,0}, TestID->"padArrayOperatorForm"],
+	VerificationTest[Length @ randomArrayFragment[{1,2,3,4},2],2, TestID->"randomArrayFragment"]
 	};
 
 
