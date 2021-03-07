@@ -47,6 +47,8 @@ NonNegativeIntegerQ = Internal`NonNegativeIntegerQ;
 PositiveIntegerQ = Internal`PositiveIntegerQ;
 randomSplitInRate::usage = "randomSplitInRate[data, r] \:043f\:0435\:0440\:0435\:043c\:0435\:0448\:0438\:0432\:0430\:0435\:0442 data \:0438 \:0432\:043e\:0437\:0432\:0440\:0430\:0449\:0430\:0435\:0442 \:0434\:0432\:0430 \:043a\:0443\:0441\:043a\:0430 \:0432 \:043f\:0440\:043e\:043f\:043e\:0440\:0446\:0438\:0438 r";
 
+limitOutputTo::usage = "limitOutputTo[expr,byteLimit] \:043e\:0433\:0440\:0430\:043d\:0438\:0447\:0438\:0432\:0430\:0435\:0442 \:043a\:043e\:043b\:0438\:0447\:0435\:0441\:0442\:0432\:043e \:0431\:0430\:0439\:0442, \:043a\:043e\:0442\:043e\:0440\:044b\:0435 
+expr \:043c\:043e\:0436\:0435\:0442 \:0437\:0430\:043f\:0438\:0441\:0430\:0442\:044c \:0432 First@$Output \:0434\:043e byteLimit";
 
 
 (* ::Section:: *)
@@ -96,6 +98,49 @@ protectContext[___]/; Message[General::expectingCtxArg] = Null;
 (*\:041f\:0440\:043e\:0447\:0435\:0435*)
 
 
+(* ::Subsubsection:: *)
+(*\:041e\:0433\:0440\:0430\:043d\:0438\:0447\:0435\:043d\:0438\:0435 \:0432\:044b\:0432\:043e\:0434\:0430 \:043d\:0430 \:044d\:043a\:0440\:0430\:043d*)
+
+
+ClearAll[outputLimiter, writeOutputLimiter, limitOutputTo];
+Options[outputLimiter] = Join[{"OutputLimit" -> 100000, "Target" :> First
+   @ $Output}, Options[OpenWrite]];
+
+outputLimiter[_, append_, caller_, OptionsPattern[]] := {True, <|"BytesWritten"
+   -> 0, "OutputLimit" -> OptionValue["OutputLimit"], "Target" -> OptionValue
+  
+["Target"]|>};
+
+writeOutputLimiter[s_, bytes_] := Module[{len = Length @ bytes, written
+   = s["BytesWritten"], newWritten},
+  If[(newWritten = written + len) > s["OutputLimit"],
+    {0, s}
+    ,
+    Write[s["Target"], FromCharacterCode[bytes, "Unicode"]]; {Length 
+      @ bytes, <|s, "BytesWritten" -> newWritten|>}
+  ]
+];
+SetAttributes[limitOutputTo, HoldFirst];
+
+limitOutputTo[expr_, n_:1000] := Block[{$Output = Prepend[OpenWrite["Limited output"
+  , Method -> {"countBytes", "OutputLimit" -> n}]] @ Rest @ $Output},
+  With[{res = expr},
+    Close[First @ $Output]; res
+  ]
+];
+
+If[!MemberQ[$OutputStreamMethods, "countBytes"],
+  DefineOutputStreamMethod["countBytes", 
+  {"ConstructorFunction" -> outputLimiter
+    , "WriteFunction" -> writeOutputLimiter
+   }]
+]
+
+
+(* ::Subsubsection:: *)
+(*\:0421\:043b\:0443\:0447\:0430\:0439\:043d\:044b\:0439 \:043a\:0443\:0441\:043e\:043a \:043c\:0430\:0441\:0441\:0438\:0432\:0430*)
+
+
 randomArrayFragment::wrongLen = "Fragment of length `` can't be extracted from array of length ``";
 randomArrayFragment[arr_?ArrayQ, len_Integer] /; 0 <= len <= Length[arr] := 
 	Module[{arrLen = Length @ arr, pos}, 
@@ -103,6 +148,10 @@ randomArrayFragment[arr_?ArrayQ, len_Integer] /; 0 <= len <= Length[arr] :=
 		arr[[pos;;pos+len-1]]
 	];
 randomArrayFragment[arr_,len_] /; Message[randomArrayFragment::wrongLen, len,Length @ arr] = Null;
+
+
+(* ::Subsubsection:: *)
+(*\:0412\:0441\:044f\:043a\:0438\:0439 GUI*)
 
 
 setDockedCells[cells_] := SetOptions[EvaluationNotebook[], DockedCells -> cells];
