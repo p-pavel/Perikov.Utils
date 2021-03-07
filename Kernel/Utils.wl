@@ -50,6 +50,9 @@ randomSplitInRate::usage = "randomSplitInRate[data, r] \:043f\:0435\:0440\:0435\
 limitOutputTo::usage = "limitOutputTo[expr,byteLimit] \:043e\:0433\:0440\:0430\:043d\:0438\:0447\:0438\:0432\:0430\:0435\:0442 \:043a\:043e\:043b\:0438\:0447\:0435\:0441\:0442\:0432\:043e \:0431\:0430\:0439\:0442, \:043a\:043e\:0442\:043e\:0440\:044b\:0435 
 expr \:043c\:043e\:0436\:0435\:0442 \:0437\:0430\:043f\:0438\:0441\:0430\:0442\:044c \:0432 First@$Output \:0434\:043e byteLimit";
 
+referencesTo::usage = "hasReferencesTo[ctxStringPattern, pattern] \:043d\:0430\:0445\:043e\:0434\:0438\:0442 \:0441\:0438\:043c\:0432\:043e\:043b\:044b, \:043b\:0435\:0436\:0430\:0449\:0438\:0435 \:0432 \:043a\:043e\:043d\:0442\:0435\:043a\:0441\:0442\:0430\:0445,
+\:043f\:043e\:0434\:0445\:043e\:0434\:044f\:0449\:0438\:0445 \:043f\:043e\:0434 ctxStringPattern, \:0432 \:043e\:043f\:0440\:0435\:0434\:0435\:043b\:0435\:043d\:0438\:044f \:043a\:043e\:0442\:043e\:0440\:044b\:0445 \:0432\:0445\:043e\:0434\:0438\:0442 pattern."
+
 
 (* ::Section:: *)
 (*\:0420\:0435\:0430\:043b\:0438\:0437\:0430\:0446\:0438\:044f*)
@@ -96,6 +99,12 @@ protectContext[___]/; Message[General::expectingCtxArg] = Null;
 
 (* ::Subsection:: *)
 (*\:041f\:0440\:043e\:0447\:0435\:0435*)
+
+
+hasReferencesTo[symDef:(_Symbol|_String), pat_] :=  MemberQ[Language`ExtendedDefinition[symDef], pat, \[Infinity], Heads->True];
+hasReferencesTo[___] := False;
+namesInCtxPattern[pat_String] := Flatten @ Map[Names[#<>"*"]&,Contexts[pat]];
+referencesTo[ctxPat_String, pat_] :=  Select[namesInCtxPattern[ctxPat],hasReferencesTo[#,pat]&];
 
 
 (* ::Subsubsection:: *)
